@@ -1,0 +1,19 @@
+
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Large ML model files
+*.pt
+*.pth
+*.h5
+
+# VSCode
+.vscode/

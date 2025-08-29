@@ -7,7 +7,7 @@ from datetime import datetime
 app = Flask(__name__)
 
 # Load YOLO model
-model = YOLO(r"Z:\AI PROJECTS\PPE Detection\runs\detect\ppe_roboflow_v2small\weights\best.pt")
+model = YOLO(r"Z:/AI PROJECTS/PPE Detection/LivePPE/yolov11_large.pt")
 
 # Class map
 CLASS_MAP = {

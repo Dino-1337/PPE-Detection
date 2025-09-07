@@ -1,0 +1,34 @@
+# Core
+flask==3.0.3
+jinja2==3.1.3
+
+# Computer Vision
+opencv-python==4.10.0.84
+mediapipe==0.10.14
+
+# Deep Learning (PyTorch + CUDA 12.4 for RTX 3050)
+torch==2.6.0+cu124
+torchvision==0.21.0+cu124
+torchaudio==2.6.0+cu124
+# (PyTorch wheels must be installed with pip --extra-index-url https://download.pytorch.org/whl/cu124)
+
+# Ultralytics YOLO
+ultralytics==8.3.191
+
+# DeepFace (depends on TensorFlow, Keras, etc.)
+deepface==0.0.92
+
+# TensorFlow (CPU version to avoid conflict with PyTorch CUDA)
+tensorflow-cpu==2.13.1
+keras==2.13.1
+
+# Data Science
+numpy==1.24.3
+scipy==1.11.4
+pandas==2.1.4
+
+# Other utils
+tqdm==4.67.1
+matplotlib==3.10.6
+scikit-learn==1.7.1
+typing-extensions==4.12.2   # required by tensorflow 2.13.1

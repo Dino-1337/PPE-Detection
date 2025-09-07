@@ -3,11 +3,11 @@ from ultralytics import YOLO
 import cv2
 import os
 from datetime import datetime
-
+import torch
 app = Flask(__name__)
 
 # Load YOLO model
-model = YOLO(r"Z:/AI PROJECTS/PPE Detection/LivePPE/yolov11_large.pt")
+model = YOLO(r"Z:/AI PROJECTS/PPE Detection/LivePPE/yolov11_large.pt").to("cuda")  # Use "cpu" if no GPU
 
 # Class map
 CLASS_MAP = {
@@ -24,7 +24,7 @@ CLASS_MAP = {
 }
 
 # Camera
-camera = cv2.VideoCapture(1)  # Change index if wrong
+camera = cv2.VideoCapture(0)  # Change index if wrong
 camera_active = True
 
 

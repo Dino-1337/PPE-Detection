@@ -162,8 +162,13 @@ class PPEFaceDetectionSystem:
         self.face_db = FaceDatabase(face_db_path)
         
         # Camera
-        self.camera = cv2.VideoCapture(1)
+        self.camera = cv2.VideoCapture(0)  # Changed to 0 for default camera
         self.camera_active = True
+        
+        # Performance optimization: Frame skipping for face recognition
+        self.face_recognition_interval = 30  # Run face recognition every N frames (30 frames = ~1 second at 30 FPS)
+        self.frame_counter = 0
+        self.cached_face_results = []  # Cache last face recognition results
         
         # Detection results cache for API
         self.latest_detections = {
@@ -219,12 +224,9 @@ class PPEFaceDetectionSystem:
                     face_crop = frame[y1:y2, x1:x2]
                     
                     if face_crop.size > 0:
-                        # Get face embedding
-                        temp_path = "temp_face.jpg"
-                        cv2.imwrite(temp_path, face_crop)
-                        
+                        # Get face embedding (pass image directly, no disk I/O)
                         embedding = DeepFace.represent(
-                            img_path=temp_path,
+                            img_path=face_crop,  # Pass numpy array directly
                             model_name='Facenet',
                             enforce_detection=False
                         )[0]['embedding']
@@ -237,10 +239,6 @@ class PPEFaceDetectionSystem:
                             'identity': identity,
                             'confidence': confidence
                         })
-                        
-                        # Clean up temp file
-                        if os.path.exists(temp_path):
-                            os.remove(temp_path)
                             
                 except Exception as e:
                     logger.error(f"Error processing face: {e}")
@@ -250,11 +248,18 @@ class PPEFaceDetectionSystem:
     
     def process_frame(self, frame: np.ndarray) -> np.ndarray:
         """Process frame with both PPE and face detection"""
-        # PPE Detection
+        # PPE Detection (runs every frame)
         ppe_frame, ppe_status = self.detect_ppe(frame)
         
-        # Face Detection and Recognition
-        face_results, _ = self.detect_and_recognize_faces(frame)
+        # Face Detection and Recognition (optimized with frame skipping)
+        self.frame_counter += 1
+        if self.frame_counter % self.face_recognition_interval == 0:
+            # Run face recognition every N frames
+            face_results, _ = self.detect_and_recognize_faces(frame)
+            self.cached_face_results = face_results  # Cache results
+        else:
+            # Use cached results for intermediate frames
+            face_results = self.cached_face_results
         
         # Update cache for API - format for HTML compatibility
         self.latest_detections.update(ppe_status)

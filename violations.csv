@@ -1,0 +1,14 @@
+timestamp,employee_name,violation_type,confidence,snapshot_path
+2025-12-22 22:40:42,Priyanshu,NO-Hardhat,0.73,static/violations\priyanshu_no-hardhat_20251222_224042.jpg
+2025-12-22 22:40:42,Priyanshu,NO-Mask,0.73,static/violations\priyanshu_no-mask_20251222_224042.jpg
+2025-12-22 22:40:42,Priyanshu,NO-Safety_Vest,0.73,static/violations\priyanshu_no-safety_vest_20251222_224042.jpg
+2025-12-22 22:48:48,Priyanshu,NO-Hardhat,0.82,static/violations\priyanshu_no-hardhat_20251222_224848.jpg
+2025-12-22 22:48:48,Priyanshu,NO-Mask,0.82,static/violations\priyanshu_no-mask_20251222_224848.jpg
+2025-12-22 22:48:48,Priyanshu,NO-Safety_Vest,0.82,static/violations\priyanshu_no-safety_vest_20251222_224848.jpg
+2025-12-23 18:50:02,Priyanshu,NO-Hardhat,0.71,static/violations\priyanshu_no-hardhat_20251223_185002.jpg
+2025-12-23 18:50:02,Priyanshu,NO-Mask,0.71,static/violations\priyanshu_no-mask_20251223_185002.jpg
+2025-12-23 18:50:02,Priyanshu,NO-Safety_Vest,0.71,static/violations\priyanshu_no-safety_vest_20251223_185002.jpg
+2025-12-23 21:26:58,Priyanshu,"NO-Hardhat, NO-Mask",0.76,"static/violations\priyanshu_no-hardhat, no-mask_20251223_212658.jpg"
+2025-12-23 21:27:05,Priyanshu,"NO-Hardhat, NO-Mask, NO-Safety_Vest",0.84,"static/violations\priyanshu_no-hardhat, no-mask, no-safety_vest_20251223_212705.jpg"
+2025-12-23 21:48:34,Priyanshu,"NO-Hardhat, NO-Mask, NO-Safety_Vest",0.79,"static/violations\priyanshu_no-hardhat, no-mask, no-safety_vest_20251223_214834.jpg"
+2025-12-23 21:49:01,Priyanshu,"NO-Hardhat, NO-Mask",0.79,"static/violations\priyanshu_no-hardhat, no-mask_20251223_214901.jpg"

@@ -10,6 +10,7 @@ from datetime import datetime
 import logging
 import config
 from models import FaceDatabase, PPEFaceDetectionSystem
+from models.violation_logger import ViolationLogger
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -17,12 +18,21 @@ logger = logging.getLogger(__name__)
 app = Flask(__name__)
 
 logger.info("Initializing PPE Detection & Face Recognition System...")
+
+# Initialize violation logger
+violation_logger = ViolationLogger(
+    log_file="violations.csv",
+    snapshot_dir="static/violations",
+    cooldown_minutes=config.VIOLATION_COOLDOWN_MINUTES,
+    log_unknown=config.LOG_UNKNOWN_VIOLATIONS
+)
+
 detection_system = PPEFaceDetectionSystem(
     ppe_model_path=config.PPE_MODEL_PATH,
     face_db_path=config.FACE_DB_PATH,
     camera_index=config.CAMERA_INDEX,
     face_recognition_interval=config.FACE_RECOGNITION_INTERVAL,
-    class_map=config.CLASS_MAP
+    violation_logger=violation_logger
 )
 logger.info("System initialized successfully!")
 
@@ -72,9 +82,5 @@ def take_snapshot():
 
 
 if __name__ == "__main__":
-    logger.info(f"Starting Flask server on {config.FLASK_HOST}:{config.FLASK_PORT}")
-    app.run(
-        debug=config.FLASK_DEBUG, 
-        host=config.FLASK_HOST, 
-        port=config.FLASK_PORT
-    )
+    logger.info("Starting Flask server on 0.0.0.0:5000")
+    app.run(debug=True, host='0.0.0.0', port=5000)

@@ -1,8 +1,3 @@
-"""
-Face Database Management Module
-
-Handles face embedding creation, caching, and identification using DeepFace and FaceNet.
-"""
 
 import os
 import numpy as np
@@ -16,7 +11,6 @@ logger = logging.getLogger(__name__)
 
 
 class FaceDatabase:
-    """Manages face embeddings database for recognition"""
     
     def __init__(self, face_data_path: str):
         self.face_data_path = face_data_path
@@ -26,7 +20,6 @@ class FaceDatabase:
         self.load_face_database()
     
     def load_face_database(self):
-        """Load and process face database"""
         try:
             embeddings_file = os.path.join(self.face_data_path, 'embeddings.pkl')
             
@@ -39,7 +32,6 @@ class FaceDatabase:
             else:
                 self.create_embeddings_from_images()
                 
-            # Convert to matrix for faster similarity search
             if self.embeddings_cache:
                 embeddings_list = []
                 names_list = []
@@ -59,7 +51,6 @@ class FaceDatabase:
             self.person_names = []
     
     def create_embeddings_from_images(self):
-        """Create embeddings from face images in the database"""
         if not os.path.exists(self.face_data_path):
             logger.error(f"Face data path doesn't exist: {self.face_data_path}")
             return
@@ -105,7 +96,6 @@ class FaceDatabase:
             }, f)
     
     def identify_face(self, face_embedding: np.ndarray, threshold: float = 0.7) -> Tuple[str, float]:
-        """Identify face using cosine similarity"""
         if self.embeddings_matrix is None or len(self.embeddings_matrix) == 0:
             return "Unknown", 0.0
         

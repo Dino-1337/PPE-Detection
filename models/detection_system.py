@@ -1,9 +1,3 @@
-"""
-PPE and Face Detection System Module
-
-Main detection system combining YOLO PPE detection with MediaPipe face detection
-and DeepFace recognition.
-"""
 
 import cv2
 import numpy as np
@@ -17,6 +11,8 @@ import logging
 import os
 
 from .face_database import FaceDatabase
+from .violation_logger import ViolationLogger
+import config
 
 logger = logging.getLogger(__name__)
 
@@ -26,7 +22,7 @@ class PPEFaceDetectionSystem:
     
     def __init__(self, ppe_model_path: str, face_db_path: str, 
                  camera_index: int = 0, face_recognition_interval: int = 30,
-                 class_map: Dict = None):
+                 violation_logger: ViolationLogger = None):
         self.ppe_model = YOLO(ppe_model_path)
         if torch.cuda.is_available():
             self.ppe_model.to("cuda")
@@ -34,7 +30,7 @@ class PPEFaceDetectionSystem:
         else:
             logger.info("PPE model loaded on CPU")
         
-        self.CLASS_MAP = class_map if class_map else {
+        self.CLASS_MAP = {
             0: 'Hardhat', 1: 'Mask', 2: 'NO-Hardhat', 3: 'NO-Mask',
             4: 'NO-Safety Vest', 5: 'Person', 6: 'Safety Cone',
             7: 'Safety Vest', 8: 'machinery', 9: 'vehicle'
@@ -47,7 +43,8 @@ class PPEFaceDetectionSystem:
         )
         
         self.face_db = FaceDatabase(face_db_path)
-        self.face_db = FaceDatabase(face_db_path)
+        
+        self.violation_logger = violation_logger
         
         self.camera = cv2.VideoCapture(camera_index)
         self.camera_active = True
@@ -68,7 +65,8 @@ class PPEFaceDetectionSystem:
     
     def detect_ppe(self, frame: np.ndarray) -> Tuple[np.ndarray, Dict]:
         """Detect PPE in frame"""
-        results = self.ppe_model.predict(frame, imgsz=640, conf=0.5, verbose=False)
+        results = self.ppe_model.predict(frame, imgsz=640, conf=config.PPE_CONFIDENCE_THRESHOLD, verbose=False)
+
         detections = results[0].boxes.cls.tolist() if results[0].boxes is not None else []
         
         ppe_status = {
@@ -139,7 +137,11 @@ class PPEFaceDetectionSystem:
         if self.frame_counter % self.face_recognition_interval == 0:
             # Run face recognition every N frames
             face_results, _ = self.detect_and_recognize_faces(frame)
-            self.cached_face_results = face_results  # Cache results
+            self.cached_face_results = face_results
+            
+            # Check and log violations (only when face recognition runs)
+            if self.violation_logger:
+                self.violation_logger.check_and_log_violations(ppe_status, face_results, frame)
         else:
             # Use cached results for intermediate frames
             face_results = self.cached_face_results
